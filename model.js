@@ -4,7 +4,8 @@ const Swal  = require('sweetalert2');
 const printJS = require('print-js');
 
 // const path1 = 'database/pos1.db';  // for testing 
-const stores = process.env.APPDATA;
+const stores = 'database/';  // for macOS testing 
+// const stores = process.env.APPDATA; // for winOS testing 
 const mainDB = "pos17.db";
 const path2 = stores+"/"+mainDB;
  console.log(path2);
