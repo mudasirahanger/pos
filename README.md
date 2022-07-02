@@ -1,3 +1,11 @@
-# electron-skeleton POS App WIN & macOS v2.0
+# electron-skeleton POS App  macOS setup 
 
-This is a minimal Electron application for POS this is setup to be run on mac 
+POS build setup to be run on mac 
+
+# Dependencies 
+  -Javascript 
+        Axios
+        jquery 
+        sqlite3
+        sweetalert2
+  
