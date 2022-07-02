@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>Phamb | POS</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="vendor/bootstrap-3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/custom.css">
+  
+   <!-- jquery
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+ 
+  <script> window.$ = window.jQuery = require('jquery'); </script>
+  <script src="vendor/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+  <script src="vendor/shopify/shopify.js"></script>
+  <script src="vendor/jquery/jquery.invoice.js"></script>
+  <script src="vendor/jquery/JsBarcode.code39.min.js"></script>
+  <script src="model.js"></script>
+  
+ 
+
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="images/favicon.png">
+
+</head>
+<body>
+
+  <!-- welcome Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <div class="container" id="main-welcome">
+    <div class="row">
+      <div class="" style="margin-top: 5%">
+        <h4>POS</h4>
+       <center>  <img src="images/logo.png" style="width: 20%;"> </center>
+        <h1>Phamb Fashions Pvt Ltd</h1>
+        <!-- All of the Node.js APIs are available in this renderer process. -->
+     <!--   We are using Node.js <script>document.write(process.versions.node)</script>,
+        Chromium <script>document.write(process.versions.chrome)</script>,
+        and Electron <script>document.write(process.versions.electron)</script>.
+     --> 
+        Luxury Pashmina Clothing 
+      </div>
+    </div>
+    <div class="row" style="margin-top: 10%;">
+         <button class="btn btn-block btn-primary" id="enter-pos">Enter SALE <span class="glyphicon glyphicon-barcode" aria-hidden="true"></span></button>
+    </div>
+    <div class="row" style="margin-top: 1%;">
+      <button class="btn btn-block btn-default" id="enter-pos-gst">Enter GST SALE <span class="glyphicon glyphicon-barcode" style="font-size: 12px;"  aria-hidden="true"></span></button>
+    </div>
+    <div class="row" style="margin-top: 10%;">
+      <center>Connection status: <strong id='status'></strong> | 
+      <a id="refresh" class="btn btn-link">refresh</a> </center>
+    </div>
+ 
+  </div>
+
+  <!-- welcome Page Layout end
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+  <!-- Primary Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+  
+  <div class="container hidden" id="pos">
+    <form action="#" id="invoice">
+    <div class="row" style="margin-top: 5%">
+        <h4>SALE</h4>
+        <div class="col-md-9" >
+          <table class="table table-bordered" id="customer-detials">
+            <tr><td>Customer Name</td>
+            <td> Customer Mobile No </td>
+            <td> Customer Address </td></tr>
+            <tr><td><input class="form-control" placeholder="Name" id="cname" type="text"></td>
+              <td>
+                <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon1">+91</span>
+                  <input type="text" class="form-control" placeholder="Mobile No" id="cmobile" aria-describedby="basic-addon1" maxlength="10">
+                </div></td>
+              <td><input class="form-control" placeholder="Address" id="caddress" type="text"></td>
+            </tr>
+          </table>
+          <table class="table hidden" id="customer-detials-gst">
+            <tr><td>
+              <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">GSTIN</span>
+              <input class="form-control" placeholder="gst number" id="gstin" type="text"  maxlength="15">
+              </div>
+             </td>
+            </tr>
+          </table>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-md-9" >
+        <table class="table table-bordered" id="customer-sales">
+          <thead>
+              <tr class="item-row">
+                  <th>SKU/Barcode</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Total</th>
+              </tr>
+          </thead>
+          <tbody>
+          <tr id="hiderow">
+            <td colspan="4">
+                <a id="addRow" href="javascript:;" title="Add a row" class="btn btn-primary">Add Item <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            </td>
+           </tr>
+          <!-- Here should be the item row -->
+          <!--<tr class="item-row">
+              <td><input class="form-control item" placeholder="Item" type="text"></td>
+              <td><input class="form-control price" placeholder="Price" type="text"></td>
+              <td><input class="form-control qty" placeholder="Quantity" type="text"></td>
+              <td><span class="total">0.00</span></td>
+          </tr>-->
+          <tr>
+              <td></td>
+              <td></td>
+              <td class="text-right"><strong>Sub Total</strong></td>
+              <td><span id="subtotal">0.00</span></td>
+          </tr>
+          <tr>
+              <td><strong>Total Quantity: </strong><span id="totalQty" style="color: red; font-weight: bold">0</span> Pcs</td>
+              <td></td>
+              <td class="text-right"><strong>Discount</strong></td>
+              <td><input class="form-control" id="discount" value="0" type="text"></td>
+          </tr>
+          <tr class="hidden">
+              <td></td>
+              <td></td>
+              <td class="text-right"><strong>Shipping</strong></td>
+              <td><input class="form-control" id="shipping" value="0" type="text"></td>
+          </tr>
+          <tr id="gst-row" class="hidden">
+            <td></td>
+            <td></td>
+            <td class="text-right"><strong>GST %</strong></td>
+            <td><input class="form-control" id="gst" value="0" type="text"></td>
+        </tr>
+          <tr>
+              <td></td>
+              <td></td>
+              <td class="text-right"><strong>Total</strong></td>
+              <td><span id="grandTotal" style="font-size: 32px;color:red;">0</span>
+               <input type="hidden" value="0" class="grandtotal">
+              </td>
+          </tr>
+          </tbody>
+      </table>
+
+       
+      <table class="table table-bordered hidden" id="main-sales">
+        <thead>
+          <tr class="">
+             <!-- <th>Order ID</th> -->
+              <th>Customer Name</th>
+              <th>Mobile</th>
+              <th>Amount</th>
+              <th>Action</th>
+          </tr>
+      </thead>
+      <tbody>
+         <tr>
+         <!-- <td id="order_id"></td> -->
+          <td id="customer_name"></td>
+          <td id="customer_mobile"></td>
+          <td id="total"></td>
+          <td id="print"><a href=""> <span class="glyphicon glyphicon-print" aria-hidden="true"></span> Print </a></td>
+        </tr> 
+      </tbody>
+
+      </table>
+ 
+      <table class="table hidden" id="thermal_inv" style="width: 40%;">
+        <tr><td>###################################</td> </tr>
+        <tr><td>_________________________________</td> </tr>
+       <tr>
+       <td><strong>Welcome to Phamb </strong></br>
+       W : phamb.com</br>
+       E : info@phamb.co.in</br> 
+      </td>
+       </tr>
+       <tr><td>_________________________________</td> </tr>
+       <tr>
+        <td>
+          Date : <span id="customer_date_ti"></span></br>
+          Customer : <span id="customer_name_ti"></span></br>
+          Amount : <strong>₹ <span id="customer_total_ti" style="font-weight:bolder;"></span></strong></br>
+        </td>
+      </tr>
+      <tr><td>Order Id :<strong>#00000-<span id="customer_order_id"></span> </strong></td></tr>
+      <tr><td>_________________________________</td> </tr>
+      <tr>
+        <td><strong>Thank You.</strong></br>
+       </td>
+        </tr>
+        <tr><td>_________________________________</td> </tr>
+        <tr><td>###################################</td> </tr>
+      </table>
+      
+      </div>
+ 
+      <div class="col-md-3" >
+
+        <div class="row" style="margin-top: 10%;">
+          <button class="btn btn-block btn-Primary hidden" onclick="console.log('sendingg...');"> <span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Last Sale </button>
+         </div>
+        
+       <div class="row" style="margin-top: 10%;">
+        <button class="btn btn-block btn-Primary" id="show_sales"> <span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Last Sale </button>
+       </div>
+       <div class="row" style="margin-top: 10%;">
+        <button class="btn btn-block btn-Primary" id="leave-pos" >  <span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home </button>
+       </div>
+       <div class="row" style="margin-top: 10%;">
+        <a class="btn btn-block btn-success" id="btn_sale">  <span class="glyphicon glyphicon-credit-card" aria-hidden="true"></span> Sale </a>
+   </div>
+      </div>
+    
+
+    </div>
+
+  
+  </div>
+   
+</form>
+
+
+
+  
+  <div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog modal-sm">
+          <div class="modal-content" style="width: 68px">
+            <svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+              <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+          </div>
+      </div>
+  </div>
+
+
+
+
+
+
+
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+  <script>
+    // You can also require other files to run in this process
+    require('./renderer.js')
+    
+  </script>
+  <script>
+    // simple sale
+   $('#enter-pos').on('click',function(e){
+      e.preventDefault();
+        modal();
+        $('#main-welcome').addClass('hidden');
+        $('#pos').removeClass('hidden');
+        $('#main-sales').addClass('hidden');
+        $('#customer-detials').removeClass('hidden');
+        $('#customer-detials-gst').addClass('hidden');
+        $('#customer-sales').removeClass('hidden');
+        $('#btn_sale').removeClass('hidden');
+        $('#invoice').trigger("reset");
+        $('#thermal_inv').addClass('hidden');
+   });
+   // gst sale
+   $('#enter-pos-gst').on('click',function(e){
+      e.preventDefault();
+        modal();
+        $('#main-welcome').addClass('hidden');
+        $('#pos').removeClass('hidden');
+        $('#main-sales').addClass('hidden');
+        $('#customer-detials').removeClass('hidden');
+        $('#customer-detials-gst').removeClass('hidden');
+        $('#customer-sales').removeClass('hidden');
+        $('#btn_sale').removeClass('hidden');
+        $('#invoice').trigger("reset");
+        $('#thermal_inv').addClass('hidden');
+        $('#gst-row').removeClass('hidden');
+   });
+
+   $('#leave-pos').on('click',function(e){
+      e.preventDefault();
+        modal();
+        $('#main-welcome').removeClass('hidden');
+        $('#pos').addClass('hidden');
+        $('#main-sales').addClass('hidden');
+        $('#customer-detials').removeClass('hidden');
+        $('#customer-detials-gst').addClass('hidden');
+        $('#customer-sales').removeClass('hidden');
+        $('#btn_sale').removeClass('hidden');
+        $('#invoice').trigger("reset");
+        $('#thermal_inv').addClass('hidden');
+        $('#gst-row').addClass('hidden');
+   });
+
+   $('#show_sales').on('click',function(e){
+      e.preventDefault();
+        modal();
+        $('#main-sales').removeClass('hidden');
+        $('#customer-detials').addClass('hidden');
+        $('#customer-detials-gst').addClass('hidden');
+        $('#customer-sales').addClass('hidden');
+        $('#btn_sale').addClass('hidden');
+        $('#gst-row').addClass('hidden');
+        orders();
+   });
+ 
+   $('#print').on('click',function(e){
+      e.preventDefault();
+        modal();
+        $('#thermal_inv').removeClass('hidden');
+        printJS('thermal_inv', 'html');
+   });
+
+
+   
+ 
+   function modal(){
+       $('.modal').modal('show');
+       setTimeout(function () {
+       	$('.modal').modal('hide');
+       }, 1000);
+    }
+  </script>
+  <script>
+        jQuery(document).ready(function(){
+            jQuery().invoice({
+                addRow : "#addRow",
+                delete : ".delete",
+                parentClass : ".item-row",
+
+                price : ".price",
+                qty : ".qty",
+                total : ".total",
+                totalQty: "#totalQty",
+
+                subtotal : "#subtotal",
+                discount: "#discount",
+                shipping : "#shipping",
+                gst : "#gst",
+                grandTotal : "#grandTotal"
+            });
+        });
+    </script>
+    <script>
+      // for getting barcode data
+    function getBarcodeData(sku,product_row) {
+       
+       if(sku !== ''){
+
+          modal();
+           console.log('getting...');
+           console.log(sku);
+           console.log(product_row);
+           const sql = `SELECT sku,price,qty FROM products WHERE sku = ?`;
+            db.get(sql,[sku],(err,row) => {
+              if (err) {              
+              console.log(err.message);
+              }
+                         
+              if(typeof row === "undefined"){
+                Swal.fire({
+                    title: 'Alert!',
+                    text: 'SKU Missing...',
+                    icon: 'error'
+                  });
+              } else {
+               
+              $('#price_'+product_row).val(row.price);
+              $('#qty_'+product_row).val(row.qty);
+              
+              }
+              });
+
+            } else {
+                
+              Swal.fire({
+                    title: 'Alert!',
+                    text: 'SKU Missing...',
+                    icon: 'error'
+                  });
+                
+            }
+     }
+    </script>
+
+<script>
+// Submit form with id function.
+$("#btn_sale").click(function(e){
+      e.preventDefault();
+
+      const postData = $("#invoice").serializeArray();
+     // console.log(postData);
+      const customer_name = $('#cname').val(); 
+      const customer_mobile = $('#cmobile').val(); 
+      const customer_address = $('#caddress').val();  
+      const customer_gst = $('#gstin').val();
+      const discount = $('#discount').val();
+      const gst = $('#gst').val();
+      const grandTotal = $('.grandtotal').val();
+
+     
+    
+      if(postData.length !== '') {
+       
+
+      // prints date & time in YYYY-MM-DD format
+      let ts = Date.now();
+
+      let date_ob = new Date(ts);
+      let date = date_ob.getDate();
+      let month = date_ob.getMonth() + 1;
+      let year = date_ob.getFullYear();
+      
+      const fullDate = year + "-" + month + "-" + date;
+    
+       const sql = `INSERT INTO orders(customer_name,customer_mobile,customer_address,customer_gst,total,discount,gst,date_added)
+                         VALUES(?,?,?,?,?,?,?,?)`;
+             db.run(sql,[customer_name,customer_mobile,customer_address,customer_gst,grandTotal,discount,gst,fullDate],(err) =>{
+
+               if(null == err){
+               
+                 // row inserted successfully into another table
+                const sql = `SELECT order_id FROM orders ORDER BY order_id DESC LIMIT 1`;
+                    db.get(sql,[],(err,row) => {
+                      if (err) {              
+                        console.log(err.message);
+                    }  else {
+                      const last_order_id = row.order_id;
+                      console.log(last_order_id);
+
+                     if(customer_mobile !== ''){
+                    $.ajax({
+                            url: 'https://www.p.phamb.co.in/POS/wa.php?key=1903f54cd46d54aa3200a4508c948db0&type=insta&number='+ customer_mobile +'&order_id='+last_order_id,
+                            type: 'POST',
+                            success: function(json) {
+                              console.log(json);
+                            }
+                          });
+                        }
+
+                          $.each(postData, function(index,product) {
+                           
+                            if(index === 0 || index === 4 || index === 8 || index === 16){
+                                var sku = product.value;
+                              }
+                              var qty = '';
+                              // if(index === 2 || index === 6 || index === 10 || index === 18){
+                              //   var qty = product.value;
+                              // }
+                              // if(index === 1 || index === 5 || index === 9 || index === 17){
+                              //   var price = product.value;
+                              // }
+                              const sql = `INSERT INTO orders_products(order_id,product_sku,qty)
+                                  VALUES(?,?,?)`;
+                                db.run(sql,[last_order_id,sku,qty],(err) => {
+                                            if (err) {              
+                                  console.log(err.message);
+                                          }
+                                });              
+                            });
+
+                   }
+                  });
+                
+                Swal.fire({
+                    title: 'Alert!',
+                    text: 'Order # Created Successfully',
+                    icon: 'success'
+                  });
+                        $('#show_sales').trigger('click');
+            } else {
+                //Oops something went wrong
+                console.log(err);
+            }
+             
+                 
+             });
+            
+            } else {
+              Swal.fire({
+                    title: 'Alert!',
+                    text: 'Some Fields Are Missing ?',
+                    icon: 'error'
+                  });
+
+            }
+
+     });
+
+</script>
+
+
+<script>
+  // sale view
+  function orders() {
+
+        const sql = `SELECT * FROM orders`;
+            db.all(sql,[],(err,rows) => {
+              if (err) {
+              return console.log(err.message);
+            }  else {
+              rows.forEach((row) => {
+                 console.log(row.order_id);
+                 // $('#main-sales tbody #order_id').text(row.order_id);
+                  $('#main-sales tbody #customer_name').text(row.customer_name);
+                  $('#main-sales tbody #customer_mobile').text(row.customer_mobile);
+                  $('#main-sales tbody #total').text(row.total);  
+
+                  $('#customer_date_ti').text(row.date_added);
+                  $('#customer_name_ti').text(row.customer_name);
+                  $('#customer_total_ti').text(row.total);
+                  $('#customer_order_id').text(row.order_id);
+
+                 
+              });
+          
+              
+            }
+              });
+
+
+        }
+</script>
+<script>
+      // product syc with remote server
+      function productSyc(){         
+    
+        db.run("DELETE FROM products");
+
+        $.ajax({
+              url: 'https://www.p.phamb.co.in/POS/?key=1903f54cd46d54aa3200a4508c948db0&type=all',
+              type: 'get',
+              dataType: 'json',
+              beforeSend: function() {
+              modal();
+              },
+              complete: function() {
+              modal();
+              },
+              success: function(json) {
+                
+            console.log(json);
+
+            for (const product of json) {  
+
+              console.log(product['Title']);
+                    
+              const  Title  = product['Title'];      
+                        const  Variant_SKU  = product['Variant_SKU'];
+                        const  Variant_Price  = product['Variant_Price'];
+                        const  Variant_Qty  = product['Variant_Qty'];       
+                        
+                        const sql = `INSERT INTO products(product_name,sku,price,qty)
+                                    VALUES(?,?,?,?)`;
+                        db.run(sql,[Title,Variant_SKU,Variant_Price,Variant_Qty],(err) =>{
+                          
+                          if (err) return console.error(err.message);
+                
+                          console.log("Data Inserted successfully");
+            
+                              Swal.fire({
+                                title: 'Alert!',
+                                text: 'Data Synchronized Successfully',
+                                icon: 'success'
+                              })
+                        });
+                        
+            }
+
+              }
+          });
+        }
+       
+        const button = document.getElementById('refresh');
+        button.addEventListener('click', () => {
+          productSyc();
+        });
+        
+ pushOrders();
+ pushOrdersProducts();
+
+function pushOrders(){
+       
+        $.ajax({
+              url: 'https://www.p.phamb.co.in/POS/?key=1903f54cd46d54aa3200a4508c948db0&type=post&del=orders',
+              type: 'POST',
+              success: function(json) {
+                console.log(json);
+              }
+            });
+
+       
+         const sql = `SELECT * FROM orders`;
+            db.all(sql,[],(err,rows) => {
+              if (err) {              
+                console.log(err.message);
+            }  else {
+               
+              for ( const row of rows) {
+             
+             //   console.log(row);
+
+             $.ajax({
+              url: 'https://www.p.phamb.co.in/POS/?key=1903f54cd46d54aa3200a4508c948db0&type=post_o&order_id='+ row.order_id +'&customer_address='+ row.customer_address + '&customer_gst=' +row.customer_gst + '&customer_mobile=' + row.customer_mobile + '&customer_name='+ row.customer_name +'&date_added='+ row.date_added +'&discount='+ row.discount +'&total=' + row.total +'&gst='+row.gst,
+              type: 'POST',
+              success: function(json) {
+                console.log(json);
+              }
+            });
+
+ 
+
+              
+              }
+            }
+          });
+
+    
+}
+
+function test1(){
+            
+          const sql = `SELECT * FROM orders`;
+            db.all(sql,[],(err,rows) => {
+              if (err) {            
+                console.log(err.message);
+              }
+               
+              for ( const row of rows) {
+                console.log(row);
+              }
+            });
+            
+        }
+
+//         function test11(){
+            
+//             const sql = `SELECT * FROM orders_products`;
+//               db.all(sql,[],(err,rows) => {
+//                 if (err) {            
+//                   console.log(err.message);
+//                 }
+                 
+//                 for ( const row of rows) {
+//                   console.log(row);
+//                 }
+//               });
+              
+//           }
+
+function pushOrdersProducts(){
+      
+        $.ajax({
+              url: 'https://www.p.phamb.co.in/POS/?key=1903f54cd46d54aa3200a4508c948db0&type=post&del=orders_products',
+              type: 'POST',
+              success: function(json) {
+                console.log(json);
+              }
+            });
+       
+         const sql = `SELECT * FROM orders_products`;
+            db.all(sql,[],(err,rows) => {
+              if (err) {              
+                console.log(err.message);
+            }  else {
+               
+              for ( const row of rows) {
+             
+             //  console.log(row);
+
+                $.ajax({
+                  url: 'https://www.p.phamb.co.in/POS/?key=1903f54cd46d54aa3200a4508c948db0&type=post_op&order_id='+ row.order_id +'&orders_products_id='+ row.orders_products_id + '&product_name=' + row.product_name + '&product_sku=' + row.product_sku + '&qty='+ row.qty,
+                  type: 'POST',
+                  success: function(json) {
+                    console.log(json);
+                  }
+                });
+
+              
+              }
+            }
+          });
+
+     
+
+        }
+
+
+</script>
+
+
+
+</body>
+</html>

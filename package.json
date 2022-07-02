@@ -1,0 +1,38 @@
+{
+  "name": "Phamb_POS",
+  "version": "1.0.0",
+  "description": "A minimal POS application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "mudasirahanger",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^15.3.0",
+    "electron-builder": "^22.13.1"
+  },
+  "dependencies": {
+    "axios": "^0.24.0",
+    "jquery": "^3.6.0",
+    "print-js": "^1.6.0",
+    "sqlite3": "^5.0.2",
+    "sweetalert2": "^11.1.9"
+  },
+  "build": {
+    "appId": "com.phamb.pos",
+    "win": {
+      "target": "nsis",
+      "icon": "images/icon.png"
+    }
+  }
+}
